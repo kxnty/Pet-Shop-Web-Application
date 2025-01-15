@@ -1,0 +1,67 @@
+<!-- reportcus.html -->
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+    <title>Customer Report</title>
+{% endblock %}
+
+{% block content %}
+    <div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">Customer Report</div> 
+
+    {% if messages %}
+        {% for message in messages %}
+            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                <!-- Define your SVG symbols here -->
+            </svg>
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+                <div>
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <form method="GET" action="{% url 'reportcus' %}">
+        {% csrf_token %}
+        <div class="input-group">
+            <label for="customer_code" style="font-size: 10px">Customer Code:</label>
+            <input type="text" name="customer_code" id="customer_code" class="form-control" />
+    
+            <button type="submit" class="btn btn-outline-primary" data-mdb-ripple-init>Search</button>
+        </div>
+    </form>
+    
+    <hr>
+    
+    <!-- Display Receipt Table -->
+    <table class="table table-css table-bordered table-hover"> 
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th>ID</th>
+                <th>Customer ID</th>
+                <th>Customer Name</th>
+                <th>Date</th>
+                <th>Total Amount</th>
+                <th>Receipt</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for receipt in receipts %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ receipt.id }}</td>
+                    <td>{{ receipt.customer.c_id }}</td>
+                    <td>{{ receipt.customer.c_name }}</td>
+                    <td>{{ receipt.date }}</td>
+                    <td>{{ receipt.total_amount }}</td>
+                    <td class="align-middle">
+                        <a href="{% url 'receipt' receipt.id %}" class="btn btn-secondary btn-sm">View</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

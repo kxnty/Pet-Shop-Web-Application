@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+<!-- Log on to codeastro.com for more projects -->
+{% load static %}
+
+
+{% block title %}
+    <title> Home </title>
+{% endblock %}
+
+
+{% block content %}
+
+    <div style="color:#464646; font-style: bold; font-size: 3rem; border-bottom: 1px solid #464646;">Welcome, {{ request.user.username }}</div><!-- Display current date and time -->
+    <div style="display: flex; justify-content: space-between;">
+        <!-- Display current date and time on the left side -->
+        <div id="currentDateTime" style="margin-top: 20px; color: #464646; font-style: bold; font-size: 1.3em;"></div>
+        
+        <!-- Display the name on the right side -->
+        <div style="color:#4e6570; margin-top: 20px; font-style: bold; font-size: 1.3em">Username: {{ request.user.first_name }} {{ request.user.last_name }}</div>
+    </div>
+    
+    <br>
+
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <a href="/daily_report" class="btn btn-info btn-lg btn-block btn-huge"><i class="fas fa-money-bill-wave" style="font-size: 50px;"></i><p style="margin-top: 20px; color: #ffffff; font-size: 1.3em;" >Daily Sales Report</p></a>
+            <a href="create_receipt" class="btn btn-secondary btn-lg btn-block btn-huge"><i class="fab fa-bitcoin" style="color: #ffffff; font-size: 50px;"></i><p style="margin-top: 20px; color: #ffffff; font-size: 1.3em;" >Create Receipt</p></a>
+            <a href="list_receipts" class="btn btn-info btn-lg btn-block btn-huge"><i class="fas fa-book-open" style="color: #ffffff; font-size: 50px;"></i><p style="margin-top: 20px; color: #ffffff; font-size: 1.3em;" >Report List All Receipt</p></a>
+            <!--<a href="list_receipts" class="btn btn-danger btn-lg btn-block btn-huge"><i class="fas fa-book-open" style="font-size: 50px;"></i><p style="margin-top: 20px; color: #ffffff; font-size: 1.3em;" ></p>Report List All Receipt</a>-->
+            <a href="reportcus" class="btn btn-secondary btn-lg btn-block btn-huge"><i class="fas fa-donate" style="color: #ffffff; font-size: 50px;"></i><p style="margin-top: 20px; color: #ffffff; font-size: 1.3em;" >Customer Collect Points</p></a>
+            <!--<a href="product" class="btn btn-info btn-lg btn-block btn-huge"><i class="fas fa-newspaper" style="font-size: 50px;"></i><p style="margin-top: 20px; color: #ffffff; font-size: 1.3em;" ></p>View All Products</a>-->
+        </div>
+        {% if user.is_authenticated and user.is_staff %}
+                <div style="margin-top: 20px; color: #4e6570; font-style: bold; font-size: 1em;">
+                    Last Login: {{ user.last_login|date:"F j, Y H:i" }}
+                </div>
+            {% endif %}
+    </div>
+        
+<script>
+    function updateDateTime() {
+        var now = new Date();
+        var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+        var dateTimeString = now.toLocaleTimeString('en-US', options);
+
+        // Assuming you have an element with the ID "currentDateTime" to display the date and time
+        document.getElementById('currentDateTime').innerText = dateTimeString;
+    }
+
+    // Update date and time every minute (you can adjust the interval as needed)
+    setInterval(updateDateTime, 60000);
+
+    // Initial update
+    updateDateTime();
+</script>
+
+   
+{% endblock content %}

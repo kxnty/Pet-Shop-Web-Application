@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Add Customer</title>
+{% endblock %}
+
+{% block content %}
+
+    <div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">Add New Customer</div> 
+    <form method="post" action="c_form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="c_id">ID</label>
+            <input type="text" name="id" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="c_name">Name</label>
+            <input type="text" name="name" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="c_phone">Phone</label>
+            <input type="text" name="phone" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="c_address">Address</label>
+            <input type="text" name="address" class="form-control">
+        </div>
+        <div class="form-group mb-3 ">
+            <label for="c_mail">Email</label>
+            <input type="text" name="email" class="form-control">
+        </div>
+        <input type="submit" value="Submit" class="btn btn-info btn-success">
+
+    </form>
+
+{%endblock%}

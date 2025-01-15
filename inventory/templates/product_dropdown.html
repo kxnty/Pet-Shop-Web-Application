@@ -1,0 +1,6 @@
+<select class="form-control" name="product">
+    <option value="">Choose...</option>
+    {% for product in products %}
+        <option value="{{ product.p_id }}">{{ product.p_name }}</option>
+    {% endfor %}
+</select>

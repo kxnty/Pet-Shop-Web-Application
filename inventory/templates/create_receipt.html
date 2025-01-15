@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Create Receipt</title>
+{% endblock %}
+
+{% block content %}
+    <div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">Create Receipt</div>
+
+    <form method="post" action="{% url 'create_receipt' %}" id="receiptForm">
+      {% csrf_token %}
+        <div class="container">
+
+            <div class="form-group">
+                <label for="customer">Customer:</label>
+                <select class="form-control" id="customer" name="customer">
+                    <option value="">Choose...</option>
+                    {% for customer in customers %}
+                        <option value="{{ customer.c_id }}">{{ customer.c_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <label for="payment_method">Payment Method:</label>
+            <select class="form-control" id="payment_method" name="payment_method">
+                <option value="">Choose...</option>
+                <option>Credit Card</option>
+                <option>Debit Card</option>
+                <option>Prompt Pay</option>
+                <option>QR Code</option>
+                <option>Cash</option>
+            </select>
+
+            <label>Date:</label>
+            <input type="date" class="form-control" id="date" name="date">
+
+            <hr>
+            <div class="text-right">
+                <button type="button" class="btn btn-secondary" onclick="addMore()">+ Add product</button>
+            </div>
+            <table class="table" id="receiptTable">
+                <hr>
+                <thead>
+                    <tr>
+                        <th scope="col">Product</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total Product</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <!-- Products will be added here -->
+                    
+                </tbody>
+            </table>
+            <hr>
+            <label for="totalAmountSummary">Total Amount:</label>
+            <input type="text" class="form-control" id="totalAmountSummary" readonly>
+            <hr>
+            <button type="submit" class="btn btn-primary" tabindex="1" >Save Receipt</button>
+
+        </div>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script>
+        function submitReceiptForm() {
+            // Prevent default form submission
+            event.preventDefault();
+
+            // Add CSRF token to the headers
+            $.ajaxSetup({
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken")
+                }
+            });
+
+            var formData = {
+                'customer': $('#customer').val(),
+                'payment_method': $('#payment_method').val(),
+                'date': $('#date').val(),
+                'total_amount': $('#totalAmountSummary').val(),
+                'products': []
+            };
+
+            // Collect product data from the table
+            $('#receiptTable tbody tr').each(function () {
+                var product = {
+                    'product': $(this).find('[name="product"]').val(),
+                    'quantity': $(this).find('[name="quantity"]').val()
+                };
+                formData.products.push(product);
+            });
+
+
+            // Send data to the server using AJAX
+            $.ajax({
+                type: 'POST',
+                url: $('#receiptForm').attr('action'),
+                data: JSON.stringify(formData),
+                contentType: 'application/json;charset=UTF-8',
+                success: function (response) {
+                    // Handle success, e.g., redirect to the receipt list page
+                    window.location.href = '{% url "list_receipts" %}';
+                },
+                error: function (error) {
+                    // Handle error
+                    console.error(error);
+                }
+            });
+        }
+
+
+        // Helper function to get CSRF token from cookies
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+
+
+        function addMore() {
+            var table = document.getElementById("receiptTable").getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow(-1);
+
+            // Insert product dropdown
+            var cell1 = newRow.insertCell(0);
+            cell1.innerHTML = getProductsDropdown();
+
+            // Insert quantity input
+            var cell2 = newRow.insertCell(1);
+            cell2.innerHTML = '<input type="number" class="form-control" name="quantity" min="1" oninput="calculateTotalAmount()">';
+
+            // Insert total product price input
+            var cell3 = newRow.insertCell(2);
+            cell3.innerHTML = '<input type="text" class="form-control" name="totalProduct" readonly>';
+
+            // Insert delete button
+            var cell4 = newRow.insertCell(3);
+            cell4.innerHTML = '<button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button>';
+        }
+
+        function deleteRow(row) {
+            var i = row.parentNode.parentNode.rowIndex;
+            document.getElementById("receiptTable").deleteRow(i);
+            calculateTotalAmount(); // Recalculate total amount after deleting a row
+        }
+
+        function getProductsDropdown() {
+            var productsDropdown = '<select class="form-control" name="product">';
+            productsDropdown += '<option value="">Choose...</option>';
+            {% for product in products %}
+                productsDropdown += '<option value="{{ product.p_id }}" data-price="{{ product.p_price }}">{{ product.p_name }}</option>';
+            {% endfor %}
+            productsDropdown += '</select>';
+            return productsDropdown;
+        }
+
+        function calculateTotalAmount() {
+            var table = document.getElementById("receiptTable").getElementsByTagName('tbody')[0];
+            var rows = table.getElementsByTagName('tr');
+            var totalAmount = 0;
+
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                var quantity = row.querySelector('[name="quantity"]').value;
+                var price = row.querySelector('[name="product"]').options[row.querySelector('[name="product"]').selectedIndex].dataset.price;
+                var totalProductPrice = quantity * price;
+
+                // Update the total product price in the row
+                row.querySelector('[name="totalProduct"]').value = isNaN(totalProductPrice) ? 0 : totalProductPrice.toFixed(2);
+
+                totalAmount += totalProductPrice;
+            }
+
+            // Update the total amount in the summary field
+            document.getElementById('totalAmountSummary').value = isNaN(totalAmount) ? 0 : totalAmount.toFixed(2);
+        }
+
+    </script>
+</body>
+</html>
+{% endblock %}

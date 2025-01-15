@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Edit Product</title>
+{% endblock %}
+
+{% block content %}
+
+    <div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">Edit Product</div> 
+    <form method="post" action="{% url 'editP' product_p_id=product.p_id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="p_id">ID</label>
+            <input type="text" name="p_id" class="form-control" value="{{ product.p_id }}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="p_name">Name</label>
+            <input type="text" name="p_name" class="form-control" value="{{ product.p_name }}">
+        </div>
+        <div class="form-group">
+            <label for="p_company">Company</label>
+            <input type="text" name="p_company" class="form-control" value="{{ product.p_company }}">
+        </div>
+        <div class="form-group">
+            <label for="p_price">Price</label>
+            <input type="text" name="p_price" class="form-control" value="{{ product.p_price }}">
+        </div>
+        <div class="form-group mb-3">
+            <label for="p_number">Number</label>
+            <input type="text" name="p_number" class="form-control" value="{{ product.p_number }}">
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="p_type">Category</label>
+            <select name="p_type" required id="id_p_type">
+                <option name="Cat" {% if product.p_type.id == 1 %}selected{% endif %}>Cat</option>
+                <option name="Rodents" {% if product.p_type.id == 2 %}selected{% endif %}>Rodents</option>
+                <option name="Dog" {% if product.p_type.id == 3 %}selected{% endif %}>Dog</option>
+                <option name="Fish" {% if product.p_type.id == 4 %}selected{% endif %}>Fish</option>
+                <option name="Bird" {% if product.p_type.id == 5 %}selected{% endif %}>Bird</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="p_cat">Types</label>
+            <select name="p_cat" required id="id_p_cat">
+                <option name="อาหารเม็ด" {% if product.p_cat.id == 1 %}selected{% endif %}>อาหารเม็ด</option>
+                <option name="อาหารเปียก" {% if product.p_cat.id == 2 %}selected{% endif %}>อาหารเปียก</option>
+                <option name="หญ้า" {% if product.p_cat.id == 4 %}selected{% endif %}>หญ้า</option>
+            </select>
+        </div>
+        <input type="submit" value="Submit edit" class="btn btn-info btn-success">
+    </form>
+
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Daily Report</title>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">Daily Report</h1>
+                <p class="text-center">Date: {{ receipts.0.date|date:"F j, Y" }}</p>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr class="text-center">
+                            <th scope="col">#</th>
+                            <th scope="col">Receipt No.</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Product</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for receipt in receipts %}
+                            <tr class="text-center">
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ receipt.id }}</td>
+                                <td>{{ receipt.customer.c_name }}</td>
+                                <td>{{ receipt.product.p_name }}</td>
+                                <td>{{ receipt.quantity }}</td>
+                                <td>{{ receipt.total_amount }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+    </div>
+    {% if daily_income %}
+        <h5 style="color:#575757; font-style: light" >Daily Income</h5>
+        <ul>
+            {% for date, amount in daily_income %}
+                <li style="color:#575757; font-style: light" >{{ date }}: {{ amount }} ฿</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    
+{% endblock %}

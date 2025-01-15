@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Receipt</title>
+{% endblock %}
+
+{% block content %}
+    
+<form method="post">
+  {% csrf_token %}
+
+    <div class="card">
+        <div class="card-body">
+          <div class="container mb-5 mt-3">
+            <div class="row d-flex align-items-baseline">
+              <div class="col-xl-12">
+                <p class="text-center" ><img src="{% static '2.png' %}" alt="" width="100" height="100">
+                    <p class="text-center" style="font-size: 20px"><strong>PAWS AND CLAWS SHOP</strong></p>
+              </div>
+            </div>
+            <div class="container">
+              <div class="col-md-12">
+                <div class="text-center">
+                  <span style="font-weight: light;"></span> 997 Get A Street<br>Hopetown, LA 1993<br>
+                  <span style="font-weight: light;">Email : pawsandclaws@mail.com</span> <br><br>
+                </div>
+      
+              </div>
+      
+              {% for receipt in receipts %}
+              <div class="row">
+                <div class="col-xl-8">
+                  <ul class="list-unstyled">
+                    <li class="text-muted"><i class="fas fa-info-circle" style="color:#5e6a70 ;"></i> Receipt No.{{ receipt.id }}</li>
+                    <li class="text-muted"><i class="fas fa-cat" style="color:#5e6a70 ;"></i> Customer: <span > {{ receipt.customer.c_name }}</span></li>
+        
+                    <li class="text-muted"><i class="fas fa-phone" style="color:#5e6a70 ;"></i> {{ receipt.customer.c_phone }}</li>
+                  </ul>
+                </div>
+                <div class="col-xl-4">
+                  
+                  <ul class="list-unstyled">
+                    <li class="text-muted"><i class="fas fa-paw" style="color:#5e6a70 ;"></i> <span
+                        class="fw-bold">Date: </span>{{ receipt.date }}</li>
+                    <li class="text-muted"><i class="fas fa-paw" style="color:#5e6a70 ;"></i> <span
+                        class="fw-bold">Payment: </span>{{ receipt.payment_method }}</li>
+                    <li class="text-muted"><i class="fas fa-paw" style="color:#5e6a70 ;"></i> <span
+                        class="fw-bold">Address: </span>{{ receipt.customer.c_address }}</li>
+                  </ul>
+                </div>
+              </div>
+      
+              <div class="row my-2 mx-1 justify-content-center">
+                <table class="table table-striped table-borderless">
+                  <thead style="background-color:#84B0CA ;" class="text-white">
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Product Code</th>
+                      <th scope="col">Product</th>
+                      <th scope="col">Qty</th>
+                      <th scope="col">Unit Price</th>
+                      
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">1</th>
+                      <td>{{ receipt.product.p_id }}</td>
+                      <td>{{ receipt.product.p_name }}</td>
+                      <td>{{ receipt.quantity }}</td>
+                      <td>{{ receipt.product.p_price }}</td>
+                      
+                    </tr>
+
+                  </tbody>
+      
+                </table>
+              </div>
+              <div class="row">
+                <div class="col-xl-8">
+                  
+      
+                </div>
+                <div class="col-xl-3">
+                  
+                  <p class="text-black float-start"><span class="text-black me-3"> Total Amount: </span><span
+                      style="font-size: 25px;"> {{ receipt.total_amount }}</span></p>
+                </div>
+              </div>
+              {% endfor %}
+              
+              <hr>
+              <div class="row">
+                <div class="col-xl-12">
+                  <p class="text-center">Thank you for your purchase</p>
+                </div>
+                
+              </div>
+      
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <!-- <div class="text-left" >
+        <td><a href="/list_receipts" class="btn btn-info" style="font-size: 20px" > Back </a></td>
+    </div> -->
+  </form>
+{% endblock %}

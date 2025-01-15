@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+    <title>Receipt Report</title>
+{% endblock %}
+
+{% block content %}
+    <div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">Receipt Report</div> 
+
+    {% if messages %}
+        {% for message in messages %}
+            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                <!-- Define your SVG symbols here -->
+            </svg>
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+                <div>
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    
+    <form method="GET" action="{% url 'report' %}">
+      {% csrf_token %}
+      <div class="input-group">
+          <label for="start_date" style="font-size: 10px">From:</label>
+          <input type="date" name="start_date" id="start_date" class="form-control" required />
+          
+          <label for="end_date" style="font-size: 10px">To:</label>
+          <input type="date" name="end_date" id="end_date" class="form-control" required />
+          
+          <button type="submit" class="btn btn-outline-primary" data-mdb-ripple-init>Search</button>
+      </div>
+  </form>
+  
+ 
+    <hr>
+    <!-- Display Receipt Table -->
+    <table class="table table-css table-bordered table-hover"> 
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Date</th>
+                <th>Total Amount</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for receipt in receipts %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ receipt.id }}</td>
+                    <td>{{ receipt.customer.c_name }}</td>
+                    <td>{{ receipt.product.p_name }}</td>
+                    <td>{{ receipt.quantity }}</td>
+                    <td>{{ receipt.date }}</td>
+                    <td>{{ receipt.total_amount }}</td>
+                    
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Display Daily Income -->
+    {% if daily_income %}
+        <h5 style="color:#575757; font-style: light" >Summary of income</h5>
+        <ul>
+            {% for date, amount in daily_income %}
+                <li style="color:#575757; font-style: light" >{{ date }}: {{ amount }} ฿</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

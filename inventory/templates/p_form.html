@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Add Product</title>
+{% endblock %}
+
+{% block content %}
+    <div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">Add New Product</div> 
+    <form method="post" action="p_form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id">ID</label>
+            <input type="text" name="id" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="company">Company</label>
+            <input type="text" name="company" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="text" name="price" class="form-control" required>
+        </div>
+        <div class="form-group mb-3">
+            <label for="number">Number</label>
+            <input type="text" name="number" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="p_type">Category</label>
+            <select name="p_type" required id="id_p_type">
+                <option name="Cat">Cat</option>
+                <option name="Rodents">Rodents</option>
+                <option name="Dog">Dog</option>
+                <option name="Fish">Fish</option>
+                <option name="Bird">Bird</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="p_cat">Types</label>
+            <select name="p_cat" required id="id_p_cat">
+                <option name="อาหารเม็ด">อาหารเม็ด</option>
+                <option name="อาหารเปียก">อาหารเปียก</option>
+                <option name="หญ้า">หญ้า</option>
+            </select>
+        </div>
+        <input type="submit" value="Submit" class="btn btn-info btn-success">
+    </form>
+{% endblock %}
